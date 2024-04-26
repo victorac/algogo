@@ -112,9 +112,9 @@ func (node *AvlNode) balance() {
 		}
 		if childLeftHeight > childRightHeight {
 			// double rotation
-			node.right.rightRotation2()
+			node.right.rightRotation()
 		}
-		node.leftRotation2()
+		node.leftRotation()
 	} else if leftHeight > rightHeight+1 {
 		// left heavy
 		child := node.left
@@ -127,32 +127,13 @@ func (node *AvlNode) balance() {
 		}
 		if childRightHeight > childLeftHeight {
 			// double rotation
-			node.left.leftRotation2()
+			node.left.leftRotation()
 		}
-		node.rightRotation2()
+		node.rightRotation()
 	}
 }
 
 func (node *AvlNode) rightRotation() {
-	previousParentValue := node.value
-	node.value = node.left.value
-	node.left.value = previousParentValue
-
-	node.left.left = node.left.right
-	node.left.right = node.right
-}
-
-func (node *AvlNode) leftRotation() {
-	previousParentValue := node.value
-	node.value = node.right.value
-	node.right.value = previousParentValue
-
-	node.right.left = node.left
-	node.left = node.right
-	node.right = node.left.right
-}
-
-func (node *AvlNode) rightRotation2() {
 	previousParentValue := node.value
 	node.value = node.left.value
 	node.left.value = previousParentValue
@@ -164,7 +145,7 @@ func (node *AvlNode) rightRotation2() {
 	node.left = previousLeftLeft
 }
 
-func (node *AvlNode) leftRotation2() {
+func (node *AvlNode) leftRotation() {
 	previousParentValue := node.value
 	node.value = node.right.value
 	node.right.value = previousParentValue
