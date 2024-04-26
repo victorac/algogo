@@ -28,9 +28,11 @@ function Node({ node }: { node: HierarchyPointNode<NodeShape> }) {
     <Group top={node.y} left={node.x}>
       {node.depth !== 0 && (
         <circle
-          r={12}
+          r={16}
           fill={background}
           stroke={isParent ? white : citrus}
+          strokeWidth={2}
+          className="hover:cursor-pointer"
           onClick={() => {
             alert(`clicked: ${JSON.stringify(node.data.data.datetime)}`);
           }}
@@ -38,7 +40,7 @@ function Node({ node }: { node: HierarchyPointNode<NodeShape> }) {
       )}
       <text
         dy=".33em"
-        fontSize={9}
+        fontSize={12}
         fontFamily="Arial"
         textAnchor="middle"
         style={{ pointerEvents: "none" }}
@@ -51,8 +53,8 @@ function Node({ node }: { node: HierarchyPointNode<NodeShape> }) {
 }
 
 function RootNode({ node }: { node: HierarchyPointNode<NodeShape> }) {
-  const width = 40;
-  const height = 20;
+  const width = 50;
+  const height = 30;
   const centerX = -width / 2;
   const centerY = -height / 2;
 
@@ -67,9 +69,10 @@ function RootNode({ node }: { node: HierarchyPointNode<NodeShape> }) {
       />
       <text
         dy=".33em"
-        fontSize={9}
+        fontSize={14}
         fontFamily="Arial"
         textAnchor="middle"
+        fontWeight="bold"
         style={{ pointerEvents: "none" }}
         fill={background}
       >
@@ -86,7 +89,6 @@ export type DendrogramProps = {
   margin?: { top: number; right: number; bottom: number; left: number };
 };
 
-const defaultMargin = { top: 40, left: 0, right: 0, bottom: 40 };
 export default function Tree({ tree, width, height, margin }: DendrogramProps) {
   const data = useMemo(() => hierarchy<NodeShape>(tree), []);
   const xMax = width - (margin?.left ?? 0) - (margin?.right ?? 0);
@@ -98,22 +100,30 @@ export default function Tree({ tree, width, height, margin }: DendrogramProps) {
       <Cluster<NodeShape> root={data} size={[xMax, yMax]}>
         {(cluster) => (
           <Group top={margin?.top} left={margin?.left}>
-            {cluster.links().map((link, i) => (
-              <LinkVertical<
-                HierarchyPointLink<NodeShape>,
-                HierarchyPointNode<NodeShape>
-              >
-                key={`cluster-link-${i}`}
-                data={link}
-                stroke={merlinsbeard}
-                strokeWidth="1"
-                strokeOpacity={0.2}
-                fill="none"
-              />
-            ))}
-            {cluster.descendants().map((node, i) => (
-              <Node key={`cluster-node-${i}`} node={node} />
-            ))}
+            {cluster.links().map((link, i) => {
+              if (link.target.data.data.datetime === -1) {
+                return null;
+              }
+              return (
+                <LinkVertical<
+                  HierarchyPointLink<NodeShape>,
+                  HierarchyPointNode<NodeShape>
+                >
+                  key={`cluster-link-${i}`}
+                  data={link}
+                  stroke={merlinsbeard}
+                  strokeWidth="2"
+                  strokeOpacity={0.2}
+                  fill="none"
+                />
+              );
+            })}
+            {cluster.descendants().map((node, i) => {
+              if (node.data.data.datetime === -1) {
+                return null;
+              }
+              return <Node key={`cluster-node-${i}`} node={node} />;
+            })}
           </Group>
         )}
       </Cluster>
