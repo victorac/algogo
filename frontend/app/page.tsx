@@ -1,9 +1,8 @@
-
 import { Hierarchy, getTree } from "./lib/actions";
 
 export default async function Home() {
   const tree = await getTree();
-
+  console.log(tree)
   const root = tree.data;
   const nodes = [[root]];
   let level = 1;
@@ -27,16 +26,18 @@ export default async function Home() {
         nextLevel[j++] = undefined;
       } else {
         currentLevel[i] = thisNode.data;
+        nextLevel[j++] =
+          thisNode.children === null ? undefined : thisNode.children[0];
+        nextLevel[j++] =
+          thisNode.children === null ? undefined : thisNode.children[1];
         if (thisNode.children) {
-          nextLevel[j++] = thisNode.children[i];
-          nextLevel[j++] = thisNode.children[i + 1];
           hasNextLevel = true;
         }
       }
     }
     nodes.push(currentLevel);
   }
-  console.log(nodes)
+  console.log(nodes);
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24 justify-start gap-10">

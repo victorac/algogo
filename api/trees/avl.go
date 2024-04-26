@@ -100,35 +100,78 @@ func (node *AvlNode) balance() {
 		rightHeight = node.right.height
 	}
 	node.difference = leftHeight - rightHeight
-	if node.difference == -2 {
+	if rightHeight > leftHeight+1 {
 		// right heavy
-		if node.right.difference == 1 {
+		child := node.right
+		var childLeftHeight, childRightHeight = -1, -1
+		if child.left != nil {
+			childLeftHeight = child.left.height
+		}
+		if child.right != nil {
+			childRightHeight = child.right.height
+		}
+		if childLeftHeight > childRightHeight {
 			// double rotation
-			node.right.rightRotation()
+			node.right.rightRotation2()
 		}
-		node.leftRotation()
-	} else if node.difference == 2 {
+		node.leftRotation2()
+	} else if leftHeight > rightHeight+1 {
 		// left heavy
-		if node.left.difference == -1 {
-			//double rotation
-			node.left.leftRotation()
+		child := node.left
+		var childLeftHeight, childRightHeight = -1, -1
+		if child.left != nil {
+			childLeftHeight = child.left.height
 		}
-		node.rightRotation()
+		if child.right != nil {
+			childRightHeight = child.right.height
+		}
+		if childRightHeight > childLeftHeight {
+			// double rotation
+			node.left.leftRotation2()
+		}
+		node.rightRotation2()
 	}
 }
 
 func (node *AvlNode) rightRotation() {
-	leftValue := node.left.value
-	node.left.value = node.value
-	node.value = leftValue
-	node.right = node.left
-	node.left = nil
+	previousParentValue := node.value
+	node.value = node.left.value
+	node.left.value = previousParentValue
+
+	node.left.left = node.left.right
+	node.left.right = node.right
 }
 
 func (node *AvlNode) leftRotation() {
-	rightValue := node.right.value
-	node.right.value = node.value
-	node.value = rightValue
+	previousParentValue := node.value
+	node.value = node.right.value
+	node.right.value = previousParentValue
+
+	node.right.left = node.left
 	node.left = node.right
-	node.right = nil
+	node.right = node.left.right
+}
+
+func (node *AvlNode) rightRotation2() {
+	previousParentValue := node.value
+	node.value = node.left.value
+	node.left.value = previousParentValue
+
+	previousLeftLeft := node.left.left
+	node.left.left = node.left.right
+	node.left.right = node.right
+	node.right = node.left
+	node.left = previousLeftLeft
+}
+
+func (node *AvlNode) leftRotation2() {
+	previousParentValue := node.value
+	node.value = node.right.value
+	node.right.value = previousParentValue
+
+	previousRightRight := node.right.right
+	node.right.right = node.right.left
+	node.right.left = node.left
+	node.left = node.right
+	node.right = previousRightRight
 }
