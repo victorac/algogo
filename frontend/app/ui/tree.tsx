@@ -71,11 +71,11 @@ function Node({
       onMouseLeave={handleMouseExit}
     >
       {node.depth !== 0 && (
-        <circle
-          r={16}
+        <ellipse
           fill={background}
+          rx="36"
+          ry="15"
           stroke={isParent ? white : citrus}
-          strokeWidth={2}
         />
       )}
       <text
@@ -86,7 +86,7 @@ function Node({
         style={{ pointerEvents: "none" }}
         fill={isParent ? white : citrus}
       >
-        {node.data.data.datetime}
+        {new Date(node.data.data.release_date * 1000).toLocaleDateString()}
       </text>
     </Group>
   );
@@ -101,7 +101,7 @@ function RootNode({
   handleMouseEnter: (args: any) => void;
   handleMouseLeave: () => void;
 }) {
-  const width = 50;
+  const width = 80;
   const height = 30;
   const centerX = -width / 2;
   const centerY = -height / 2;
@@ -129,7 +129,7 @@ function RootNode({
         style={{ pointerEvents: "none" }}
         fill={background}
       >
-        {node.data.data.datetime}
+        {new Date(node.data.data.release_date * 1000).toLocaleDateString()}
       </text>
     </Group>
   );
@@ -186,7 +186,7 @@ export default function Tree({ tree, width, height, margin }: DendrogramProps) {
           {(cluster) => (
             <Group top={margin?.top} left={margin?.left}>
               {cluster.links().map((link, i) => {
-                if (link.target.data.data.datetime === -1) {
+                if (link.target.data.data.release_date === -1) {
                   return null;
                 }
                 return (
@@ -204,7 +204,7 @@ export default function Tree({ tree, width, height, margin }: DendrogramProps) {
                 );
               })}
               {cluster.descendants().map((node, i) => {
-                if (node.data.data.datetime === -1) {
+                if (node.data.data.release_date === -1) {
                   return null;
                 }
                 return (

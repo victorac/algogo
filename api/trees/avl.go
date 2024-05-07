@@ -1,7 +1,7 @@
 package trees
 
 type Data struct {
-	Datetime    int    `json:"datetime"`
+	Datetime    int    `json:"release_date"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }

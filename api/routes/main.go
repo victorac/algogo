@@ -6,8 +6,11 @@ import (
 
 var router = gin.Default()
 
-func Run() {
+func Setup() {
 	getRoutes()
+}
+
+func Run() {
 	router.Run(":5000")
 }
 

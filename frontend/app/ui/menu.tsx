@@ -1,14 +1,23 @@
+import { OutlinedButton, OutlinedTextField } from "./material";
+
 export default function Menu({}: {}) {
   return (
-    <ul className="flex flex-col gap-2">
-      <li>
-        <div className="relative">
-          <input type="text" className="px-2 peer pt-6 pb-2"></input>
-          <label className="absolute text-sm font-semibold left-2 top-1/2 -translate-y-1/2 z-10 px-1  peer-focus:top-0">
-            Title
-          </label>
-        </div>
-      </li>
-    </ul>
+    <div className="flex flex-col gap-6 max-w-[230px] max-h-[380px]">
+      <OutlinedTextField label="Title"></OutlinedTextField>
+      <OutlinedTextField
+        label="Description"
+        type="textarea"
+        rows={3}
+        maxLength={100}
+        className="max-h-[250px] min-h-[100px]"
+      ></OutlinedTextField>
+      <div>
+        <label htmlFor="date" className="font-[Roboto]">
+          Release date
+        </label>
+        <input id="date" type="date" />
+      </div>
+      <OutlinedButton>submit</OutlinedButton>
+    </div>
   );
 }

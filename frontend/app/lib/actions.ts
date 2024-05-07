@@ -1,7 +1,7 @@
 "use server";
 
 export type NodeData = {
-  datetime: number;
+  release_date: number;
   title: string;
   description: string;
 };
@@ -29,7 +29,7 @@ function exportToList(tree: NodeShape) {
     let j = 0;
     for (let i = 0; i < currentNodes.length; i++) {
       let thisNode = currentNodes[i];
-      if (thisNode === undefined || thisNode.data.datetime === -1) {
+      if (thisNode === undefined || thisNode.data.release_date === -1) {
         currentLevel[i] = undefined;
         nextLevel[j++] = undefined;
         nextLevel[j++] = undefined;

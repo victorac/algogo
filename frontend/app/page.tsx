@@ -2,6 +2,7 @@ import { getTree } from "./lib/actions";
 import Menu from "./ui/menu";
 import Tree from "./ui/tree";
 
+
 export default async function Home() {
   const { tree } = await getTree();
   return (

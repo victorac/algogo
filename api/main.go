@@ -7,7 +7,12 @@ import (
 	"algo/search"
 	"algo/sort"
 	"algo/trees"
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"os"
+	"sync"
 )
 
 func runSorting() {
@@ -183,6 +188,60 @@ func runBST() {
 
 }
 
+type Movie struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	ReleaseDate int    `json:"release_date"`
+}
+
+func loadData() []Movie {
+	file, err := os.Open("data/movies.json")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer file.Close()
+
+	movies := []Movie{}
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&movies)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return movies
+
+}
+
 func main() {
-	routes.Run()
+	var movies []Movie
+	var wg sync.WaitGroup
+	serverReady := make(chan bool)
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		routes.Setup()
+		serverReady <- true
+		routes.Run()
+	}()
+
+	go func() {
+		defer wg.Done()
+		movies = loadData()
+		<-serverReady
+		// send data to server
+		for i := 0; i < len(movies); i++ {
+			jsonData, err := json.Marshal(movies[i])
+			if err != nil {
+				continue
+			}
+
+			_, err = http.Post("http://localhost:5000/v1/trees", "application/json", bytes.NewBuffer(jsonData))
+			if err != nil {
+				//handle error
+			}
+
+		}
+	}()
+	wg.Wait()
 }
